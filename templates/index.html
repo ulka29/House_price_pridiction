@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>House Price Prediction</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+</head>
+<body>
+<div class="container">
+    <h1 class="mt-5">House Price Prediction</h1>
+    {% if request.args.get('success') %}
+    <div class="alert alert-success" role="alert">
+        Form submitted successfully!
+    </div>
+    {% endif %}
+    <form method="post" accept-charset="utf-8">
+        <div class="form-group">
+            <label >Select Location</label>
+            <select class="form-control" id="location" name="location" required="1">
+                {% for location in locations %}
+                <option value="{{ location }}">{{ location }}</option>
+                {% endfor %}
+
+                <!-- Add more locations as needed -->
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="bhk">Enter BHK</label>
+            <input type="number" class="form-control" id="bhk" name="bhk" required>
+        </div>
+        <div class="form-group">
+            <label for="bathrooms">Enter Number of Bathrooms</label>
+            <input type="number" class="form-control" id="bathrooms" name="bathrooms" required>
+        </div>
+        <div class="form-group">
+            <label for="sqft">Enter Square Feet</label>
+            <input type="number" class="form-control" id="sqft" name="sqft" required>
+        </div>
+        <button type="submit" class="btn btn-primary" onclick="send_data()">Predict Price</button>
+    </form>
+    <div>
+        <h3><span id="prediction">
+
+        </span></h3>
+    </div>
+</div>
+
+<script>
+    function form_handler(event){
+        event.preventDefault();
+
+    }
+    function send_data(){
+        document.querySelector('form').addEventListener("submit", form_handler);
+
+        var fd = new FormData(document.querySelector('form'));
+        var xhr = new XMLHttpRequest();
+        xhr.open('POST', '/predict',true);
+        document.getElementById("prediction").innerHTML = "Wait predicting Price....";
+
+        xhr.onreadystatechange = function(){
+            if(xhr.readyState == XMLHttpRequest.DONE){
+            document.getElementById("prediction").innerHTML = "Prediction: $ "+xhr.responseText;
+            }
+        };
+        xhr.onload = function(){};
+        xhr.send(fd);
+    }
+</script>
+
+</body>
+</html>
+
+
+
+
+
